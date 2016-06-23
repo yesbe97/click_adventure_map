@@ -1,0 +1,49 @@
+.navbar{
+    background-color: #b4b4b4;
+    height: 100%;
+    width: 200px;
+}
+.minimap{
+    position: fixed;
+    bottom: 0px;
+    margin: 10px;
+    margin-bottom: 20px;
+    cursor:pointer;
+}
+div[class^="block"] {
+    /*position: absolute;*/
+    width: 12px;
+    height: 12px;
+    border: solid rgba(0,0,0,0) 1px;
+    /*box-sizing: border-box;*/
+    float: left;
+}
+div.column {
+    float: left;
+    clear: both;
+ }
+[data-location="true"] {
+    border: solid red 1px !important;
+    /*box-sizing: border-box;*/
+}
+.no_location{
+    position: fixed;
+    bottom: 104px;
+    left: 20px;
+    font-size: 22px;
+    font-weight: bold;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    color: white;
+}
+.tiny{
+    font-size: 9px;
+}
+.test{
+    position: fixed;
+    top: 0px;
+    margin: 10px;
+}
+.map_img{
+    width: 12px;
+    height: 12px;
+}
