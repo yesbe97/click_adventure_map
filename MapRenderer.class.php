@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Location.class.php';
-
 class MapRenderer
 {
     public $map;

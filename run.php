@@ -1,7 +1,7 @@
 <html>
 <head>
-    <link rel="stylesheet" href="style.css"/>
-    <link rel="javascript" href="js.js"/>
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="javascript" href="js/js.js"/>
     <link href="jquery-3.0.0.min"/>
 </head>
 <body>
