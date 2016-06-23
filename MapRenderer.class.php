@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Location.class.php';
+require_once 'DB_vars.php';
 
 class MapRenderer
 {
@@ -19,49 +19,69 @@ class MapRenderer
      * $imagefolder = folder where images can be found.
      */
 
-    function __construct($map, $imagefolder, $pointofinterest, $currentx, $currenty)
+//    function __construct($map, $imagefolder, $pointofinterest, $currentx, $currenty)
+    function __construct($array_tiles)
     {
 
     }
 
     function generateGrid($array_tiles)
     {
-        $con = new mysqli("localhost", "root", "", 'avontuur');
-        $result = mysqli_query($con, "SELECT x, y FROM locations")or die("<strong>SQL error: </strong>".mysqli_error($con));
-        $array = array();
+        $con = new mysqli(DB_vars::$server, DB_vars::$user, DB_vars::$password, DB_vars::$DB_name);
+        $result = mysqli_query($con, "SELECT * FROM locations")or die("<strong>SQL error:</strong>". mysqli_error($con));
+        $all_locations = array();
         while($row = mysqli_fetch_assoc($result)) {
-            $array[] = $row;
+            $all_locations[] = $row;
         }
+        mysqli_close($con);
         $x = 15;
         $y = 15;
-        $grid_array = "";
-        $i = false;
-        $index_array = 0;
+        $HTML_production = "";
+        $location_print_boolean = false;
+        $square_counter = 0;
+        $HTML_production .= "<div class='container'>";
         for ($x_t = 1; $x_t < ($x + 1); $x_t++) {
-            $grid_array .= "<div class='column'>";
+            $HTML_production .= "<div style='height:". 100/$x ."%;' class='column'>";
             for ($y_t = 1; $y_t < ($y + 1); $y_t++) {
-                foreach ($array as $single_locations){
+                foreach ($all_locations as $single_locations){
                     $single_locations['x'] == $x_t && $single_locations['y'] == $y_t ? $location_found = true : $location_found = false;
+                    $single_locations['cleared'] == 1 ? $cleared = true : $cleared = false;
                     if ($location_found){break;}
                 }
                 if (!isset($location_found)){
-                    if (!$i) {
-                        $grid_array = "<span class='no_location'>No locations found</span>";
-                        $i = true;
+                    if (!$location_print_boolean) {
+                        $HTML_production = "<span class='no_location'>No locations found</span>";
+                        $location_print_boolean = true;
                     }
-                    $grid_array .= "<div class='block-" . $x_t . "-" . $y_t . "'><img class='map_img' src='tiles/". $array_tiles[$index_array] .".png'/></div>";
+                    $HTML_production .= "<div style='width:". 100/$y ."%;' class='block-" . $x_t . "-" . $y_t . "'><img class='map_img' src='tiles/". $array_tiles[$square_counter] .".png'/></div>";
                 }
                 elseif ($location_found){
-                    $grid_array .= "<div class='block-" . $x_t . "-" . $y_t . "' data-location='true'><img class='map_img' src='tiles/". $array_tiles[$index_array] .".png'/></div>";
+                    if ($cleared){
+                        $HTML_production .= "<div style='width:". 100/$y ."%;' class='block-" . $x_t . "-" . $y_t . "' data-location='true' data-location-clear='true'><img class='map_img' src='tiles/". $array_tiles[$square_counter] .".png'/></div>";
+                    }
+                    else{
+                        $HTML_production .= "<div style='width:". 100/$y ."%;' class='block-" . $x_t . "-" . $y_t . "' data-location='true'><img class='map_img' src='tiles/". $array_tiles[$square_counter] .".png'/></div>";
+                    }
                 }
                 else{
-                    $grid_array .= "<div class='block-" . $x_t . "-" . $y_t . "'><img class='map_img' src='tiles/". $array_tiles[$index_array] .".png'/></div>";
+                    $HTML_production .= "<div style='width:". 100/$y ."%;' class='block-" . $x_t . "-" . $y_t . "'><img class='map_img' src='tiles/". $array_tiles[$square_counter] .".png'/></div>";
                 }
-                $index_array++;
+                $square_counter++;
             }
+            $HTML_production .= "</div>";
         }
-        $grid_array .= "</div>";
-        return $grid_array;
+        $HTML_production .= "</div>";
+        return $HTML_production;
+    }
+
+    public function ClearLocation(){
+        $con = new mysqli(DB_vars::$server, DB_vars::$user, DB_vars::$password, DB_vars::$DB_name);
+        $result = mysqli_query($con, "SELECT * FROM locations")or die("<strong>SQL error:</strong>". mysqli_error($con));
+        $all_locations = array();
+        while($row = mysqli_fetch_assoc($result)) {
+            $all_locations[] = $row;
+        }
+        mysqli_close($con);
     }
 
     function MinimapHTML($array_tiles) {
@@ -69,14 +89,14 @@ class MapRenderer
 
         // todo: create minimap html
 
-        return '<div class="minimap">' . $minimap . '</div>';
+        return '<div id="Minimap" class="minimap">' . $minimap . '</div>';
     }
 
-    function BigmapHTML() {
-        $minimap = "";
+    function BigmapHTML($array_tiles) {
+        $bigmap = $this->generateGrid($array_tiles);
         // todo: create minimap html
 
-        return '<div class="minimap">' . $minimap .'</div>';
+        return '<div class="bigmap">' . $bigmap .'</div>';
     }
 
     function HTML() {
