@@ -74,14 +74,12 @@ class MapRenderer
         return $HTML_production;
     }
 
-    public function ClearLocation(){
+    public function ClearLocation($x, $y){
         $con = new mysqli(DB_vars::$server, DB_vars::$user, DB_vars::$password, DB_vars::$DB_name);
-        $result = mysqli_query($con, "SELECT * FROM locations")or die("<strong>SQL error:</strong>". mysqli_error($con));
-        $all_locations = array();
-        while($row = mysqli_fetch_assoc($result)) {
-            $all_locations[] = $row;
-        }
+        mysqli_query($con, "UPDATE locations SET cleared = '1' WHERE x = $x AND y = $y")or die("<strong>SQL error:</strong>". mysqli_error($con));
+
         mysqli_close($con);
+        header("Refresh:0");
     }
 
     function MinimapHTML($array_tiles) {
@@ -94,15 +92,8 @@ class MapRenderer
 
     function BigmapHTML($array_tiles) {
         $bigmap = $this->generateGrid($array_tiles);
-        // todo: create minimap html
 
         return '<div class="bigmap">' . $bigmap .'</div>';
-    }
-
-    function HTML() {
-
-        return '<div class="test"><img src="tmw_desert_spacing.png" alt="uhm"></div>';
-//        return '<div class="test">' . $minimap .'</div>';
     }
 
 }

@@ -1,8 +1,8 @@
 <html>
 <head>
-    <link rel="stylesheet" href="style.css"/>
-    <script href="jquery-3.0.0.min"></script>
-    <script rel="javascript" href="js.js"></script>
+    <link rel="stylesheet" href="css/style.css"/>
+    <script href="js/jquery-3.0.0.min"></script>
+    <script rel="javascript" href="js/js.js"></script>
 </head>
 <body>
     <div class="navbar">
@@ -54,9 +54,11 @@
 //            echo $foo->BigmapHTML($array_tiles);
             echo $foo->MinimapHTML($array_tiles);
 //            echo $foo->HTML();
-        echo "</div>";//End o nav bar
+        echo "</div>";//End of nav bar
 
             echo $foo->BigmapHTML($array_tiles);
+//            sleep(5);
+            $foo->ClearLocation(1100,1);
         ?>
 </body>
 </html>
